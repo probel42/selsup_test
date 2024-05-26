@@ -25,7 +25,7 @@ public class RestQueueWrapper {
 	private final ReentrantLock lock = new ReentrantLock(true);
 
 	public void request(Runnable request) {
-		lock.lock();
+		lock.lock(); // тут по идее нужен tryLock с таймаутом, т.к. тут начнут скапливаться потоки, но в постановке не было требования это учитывать
 		try {
 			waitAvailability();
 			try {
