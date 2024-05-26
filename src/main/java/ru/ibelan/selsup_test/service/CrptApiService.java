@@ -9,10 +9,10 @@ import ru.ibelan.selsup_test.model.ProductsDoc;
 @RequiredArgsConstructor
 public class CrptApiService implements CrptApi {
 	private final RestTemplate crptRestTemplate;
-	private final RestQueueWrapper crptRestQueueWrapper;
+	private final RequestFreqLimiter crptRequestFreqLimiter;
 
 	@Override
 	public void registerProducts(ProductsDoc productsDoc, String sign) {
-		crptRestQueueWrapper.wrap(() -> crptRestTemplate.postForEntity("", productsDoc, String.class));
+		crptRequestFreqLimiter.limit(() -> crptRestTemplate.postForEntity("", productsDoc, String.class));
 	}
 }

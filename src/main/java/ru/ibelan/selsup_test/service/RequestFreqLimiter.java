@@ -12,19 +12,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Класс предназначен для проверки доступности отправки сообщения,
- * т.к. некоторые API ограничивают кол-во допустимых вызовов.
+ * Класс предназначен для ограничения частоты вызова метода.
  */
 @Slf4j
 @RequiredArgsConstructor
-public class RestQueueWrapper {
+public class RequestFreqLimiter {
 	private final TimeUnit timeUnit;
 	private final int requestLimit;
 
 	private final Queue<LocalTime> requestTimes = new LinkedList<>();
 	private final ReentrantLock lock = new ReentrantLock(true);
 
-	public void wrap(Runnable request) {
+	public void limit(Runnable request) {
 		lock.lock(); // тут по идее нужен tryLock с таймаутом, т.к. тут начнут скапливаться потоки, но в постановке не было требования это учитывать
 		try {
 			waitAvailability();
