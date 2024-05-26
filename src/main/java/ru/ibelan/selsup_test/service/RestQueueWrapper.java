@@ -24,7 +24,7 @@ public class RestQueueWrapper {
 	private final Queue<LocalTime> requestTimes = new LinkedList<>();
 	private final ReentrantLock lock = new ReentrantLock(true);
 
-	public void request(Runnable request) {
+	public void wrap(Runnable request) {
 		lock.lock(); // тут по идее нужен tryLock с таймаутом, т.к. тут начнут скапливаться потоки, но в постановке не было требования это учитывать
 		try {
 			waitAvailability();

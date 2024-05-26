@@ -13,6 +13,6 @@ public class CrptApiService implements CrptApi {
 
 	@Override
 	public void registerProducts(ProductsDoc productsDoc, String sign) {
-		crptRestQueueWrapper.request(() -> crptRestTemplate.postForEntity("", productsDoc, String.class));
+		crptRestQueueWrapper.wrap(() -> crptRestTemplate.postForEntity("", productsDoc, String.class));
 	}
 }
