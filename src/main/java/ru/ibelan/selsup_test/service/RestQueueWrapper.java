@@ -30,15 +30,13 @@ public class RestQueueWrapper {
 			waitAvailability();
 			try {
 				request.run();
-			} catch (Exception ex) {
-				log.warn(ex.getMessage());
-				ApplicationExceptions.UNEXPECTED_SERVER_ERROR.throwException(ex);
 			} finally {
 				LocalTime now = LocalTime.now();
 				log.debug("TIME IN QUEUE {}", now);
 				requestTimes.offer(now);
 			}
-		} catch (InterruptedException ex) {
+		} catch (Exception ex) {
+			log.warn(ex.getMessage());
 			ApplicationExceptions.UNEXPECTED_SERVER_ERROR.throwException(ex);
 		} finally {
 			lock.unlock();
