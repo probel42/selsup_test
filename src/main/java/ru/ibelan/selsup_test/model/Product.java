@@ -19,7 +19,7 @@ public class Product {
 	private String certificateDocumentNumber;
 	@JsonAlias("owner_inn")
 	private String ownerInn;
-	@JsonAlias("owner_inn")
+	@JsonAlias("producer_inn")
 	private String producerInn;
 	@JsonAlias("production_date")
 	private LocalDate productionDate;
