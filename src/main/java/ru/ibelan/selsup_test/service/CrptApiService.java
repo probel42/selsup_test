@@ -11,11 +11,10 @@ import ru.ibelan.selsup_test.model.ProductsDoc;
 @Slf4j
 public class CrptApiService implements CrptApi {
 	private final RestTemplate crptRestTemplate;
-	private final RestQueue crptRestQueue;
+	private final RestQueueWrapper crptRestQueueWrapper;
 
 	@Override
 	public void registerProducts(ProductsDoc productsDoc, String sign) {
-		crptRestQueue.waitAvailability();
-		crptRestTemplate.postForEntity("", productsDoc, String.class);
+		crptRestQueueWrapper.request(() -> crptRestTemplate.postForEntity("", productsDoc, String.class));
 	}
 }
