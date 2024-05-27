@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.ibelan.selsup_test.exceptions.ApplicationExceptions;
 
 import java.time.Duration;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ public class RequestFreqLimiter {
 	private final TimeUnit timeUnit;
 	private final int requestLimit;
 
-	private final Queue<LocalTime> requestTimes = new LinkedList<>();
+	private final Queue<LocalDateTime> requestTimes = new LinkedList<>();
 	private final ReentrantLock lock = new ReentrantLock(true);
 
 	public void limit(Runnable request) {
@@ -30,7 +30,7 @@ public class RequestFreqLimiter {
 			try {
 				request.run();
 			} finally {
-				LocalTime now = LocalTime.now();
+				LocalDateTime now = LocalDateTime.now();
 				log.debug("TIME IN QUEUE {}", now);
 				requestTimes.offer(now);
 			}
@@ -43,7 +43,7 @@ public class RequestFreqLimiter {
 	}
 
 	private void waitAvailability() throws InterruptedException {
-		LocalTime deprecationTime = LocalTime.now().minus(1, timeUnit.toChronoUnit());
+		LocalDateTime deprecationTime = LocalDateTime.now().minus(1, timeUnit.toChronoUnit());
 		while (!requestTimes.isEmpty() && requestTimes.peek().isBefore(deprecationTime)) {
 			requestTimes.remove();
 		}

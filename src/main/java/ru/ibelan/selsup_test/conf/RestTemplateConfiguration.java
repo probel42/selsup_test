@@ -9,7 +9,7 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Configuration
@@ -19,9 +19,9 @@ public class RestTemplateConfiguration {
 		return builder
 				.uriTemplateHandler(new DefaultUriBuilderFactory(crptUrl))
 				.interceptors((request, body, execution) -> {
-					log.debug("REQUEST TIME: {}", LocalTime.now());
+					log.debug("REQUEST TIME: {}", LocalDateTime.now());
 					ClientHttpResponse response = execution.execute(request, body);
-					log.debug("RESPONSE TIME {}", LocalTime.now());
+					log.debug("RESPONSE TIME {}", LocalDateTime.now());
 					return response;
 				})
 				.build();
