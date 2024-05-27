@@ -16,14 +16,14 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Slf4j
 @RequiredArgsConstructor
-public class RequestFreqLimiter {
+public class RequestQueue {
 	private final TimeUnit timeUnit;
 	private final int requestLimit;
 
 	private final Queue<LocalDateTime> requestTimes = new LinkedList<>();
 	private final ReentrantLock lock = new ReentrantLock(true);
 
-	public void limit(Runnable request) {
+	public void getInQueue(Runnable request) {
 		lock.lock(); // тут по идее нужен tryLock с таймаутом, т.к. тут начнут скапливаться потоки, но в постановке не было требования это учитывать
 		try {
 			waitAvailability();
