@@ -2,6 +2,7 @@ package ru.ibelan.selsup_test.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import ru.ibelan.selsup_test.exceptions.ApplicationExceptions;
 
 import java.time.Duration;
@@ -10,6 +11,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.function.Function;
 
 /**
  * Класс предназначен для ограничения частоты вызова метода.
@@ -23,12 +25,12 @@ public class RequestQueue {
 	private final Queue<LocalDateTime> requestTimes = new LinkedList<>();
 	private final ReentrantLock lock = new ReentrantLock(true);
 
-	public void getInQueue(Runnable request) {
+	public <R> ResponseEntity<R> queue(Function<Class<R>, ResponseEntity<R>> requestFunc, Class<R> responseType) {
 		lock.lock(); // тут по идее нужен tryLock с таймаутом, т.к. тут начнут скапливаться потоки, но в постановке не было требования это учитывать
 		try {
 			waitAvailability();
 			try {
-				request.run();
+				return requestFunc.apply(responseType);
 			} finally {
 				LocalDateTime now = LocalDateTime.now();
 				log.debug("TIME IN QUEUE {}", now);
@@ -40,6 +42,7 @@ public class RequestQueue {
 		} finally {
 			lock.unlock();
 		}
+		return null;
 	}
 
 	private void waitAvailability() throws InterruptedException {
